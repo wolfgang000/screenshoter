@@ -29,6 +29,14 @@
           <a id="ipcHandler" target="_blank" rel="noreferrer">Send IPC</a>
         </div>
       </div>
+      <form id="pageExporterForm">
+        <input name="url" type="text" placeholder="e.g example.com" required/>
+        <select name="format" required>
+          <option value="PNG">PNG</option>
+          <option value="PDF">PDF</option>
+        </select>        
+        <button type="submit">Export</button>
+      </form>
 
       <ul class="versions">
         <li class="electron-version"></li>
