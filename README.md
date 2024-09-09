@@ -8,6 +8,8 @@ A minimal Electron application with TypeScript
 
 ## Project Setup
 
+Use the nodejs version defined on the [.tool-versions file](./.tool-versions).
+
 ### Install
 
 ```bash
