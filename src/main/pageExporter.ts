@@ -1,13 +1,13 @@
 import { dialog } from 'electron'
-import { PageExporterFileFormat, PageExporterParams } from '../preload/types'
+import { PageExporterFileFormat, PageExporterParams, PageExporterResponse } from '../preload/types'
 import { to } from 'await-to-js'
-import puppeteer from 'puppeteer'
+import puppeteer, { ProtocolError } from 'puppeteer'
 import { join } from 'path'
 
 export async function exportPageHandler(
   _event: Electron.IpcMainInvokeEvent,
   pageExporterParams: PageExporterParams
-) {
+): Promise<PageExporterResponse> {
   const defaultClientErrorMsg = 'We where unable to generate the image, please try again later'
 
   // Launch browser
@@ -27,6 +27,12 @@ export async function exportPageHandler(
   // Go to the page
   const [gotoErr, _httpResponse] = await to(page.goto(pageExporterParams.url))
   if (gotoErr) {
+    if (
+      gotoErr instanceof ProtocolError &&
+      gotoErr.originalMessage === 'Cannot navigate to invalid URL'
+    ) {
+      return { error: 'The url is invalid' }
+    }
     console.error('Unable to go to the url', { gotoErr, pageExporterParams })
     return { error: defaultClientErrorMsg }
   }
@@ -69,5 +75,5 @@ export async function exportPageHandler(
   // Close the browser
   await browser.close()
 
-  return { ok: 'ok' }
+  return { ok: 'The screenshot was created successfully' }
 }
